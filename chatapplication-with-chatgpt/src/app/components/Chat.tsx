@@ -58,22 +58,32 @@ const Chat = () => {
                 Room1
             </h1>
             <div className="flex-grow overflow-y-auto mb-4">
-                {messages.map((message) => (
+                {messages.map((message, index) => (
                     <>
-                        <div className="text-right">
-                            <div className="bg-blue-500 inline-block rounded px-4 py-2 mb-2">
-                                <p className="text-white font-medium">
-                                    {message.text}
-                                </p>
+                        <div key={index} className={message.sender === "user" ? "text-right" : "text-left"}>
+                            <div
+                                className={message.sender === "user" ? "bg-blue-500 inline-block rounded px-4 py-2 mb-2"
+                                    : "bg-green-500 inline-block rounded px-4 py-2 mb-2"
+                                }
+                            >
+                                <p className="text-white font-medium">{message.text}</p>
                             </div>
                         </div>
-                        <div className="text-left">
-                            <div className="bg-green-500 inline-block rounded px-4 py-2 mb-2">
-                                <p className="text-white font-medium">
-                                    {message.text}
-                                </p>
-                            </div>
-                        </div>
+
+                        {/*<div className="text-right">*/}
+                        {/*    <div className="bg-blue-500 inline-block rounded px-4 py-2 mb-2">*/}
+                        {/*        <p className="text-white font-medium">*/}
+                        {/*            {message.text}*/}
+                        {/*        </p>*/}
+                        {/*    </div>*/}
+                        {/*</div>*/}
+                        {/*<div className="text-left">*/}
+                        {/*    <div className="bg-green-500 inline-block rounded px-4 py-2 mb-2">*/}
+                        {/*        <p className="text-white font-medium">*/}
+                        {/*            {message.text}*/}
+                        {/*        </p>*/}
+                        {/*    </div>*/}
+                        {/*</div>*/}
                     </>
                 ))}
             </div>
