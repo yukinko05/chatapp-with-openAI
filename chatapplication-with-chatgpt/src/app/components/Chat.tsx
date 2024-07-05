@@ -28,6 +28,7 @@ const Chat = () => {
                 const unsubscribe = onSnapshot(q, (snapshot) => {
                     const newMessages = snapshot.docs.map((doc) => doc.data() as Message);
                     setMessages(newMessages);
+                    console.log(newMessages);
                 });
 
                 return () => {
@@ -57,21 +58,24 @@ const Chat = () => {
                 Room1
             </h1>
             <div className="flex-grow overflow-y-auto mb-4">
-                <div className="text-right">
-                    <div className="bg-blue-500 inline-block rounded px-4 py-2 mb-2">
-                        <p className="text-white font-medium">
-                            Hello
-                        </p>
-                    </div>
-                </div>
-                <div className="text-left">
-                    <div className="bg-green-500 inline-block rounded px-4 py-2 mb-2">
-                        <p className="text-white font-medium">
-                            Hew are you?
-                        </p>
-                    </div>
-                </div>
-
+                {messages.map((message) => (
+                    <>
+                        <div className="text-right">
+                            <div className="bg-blue-500 inline-block rounded px-4 py-2 mb-2">
+                                <p className="text-white font-medium">
+                                    {message.text}
+                                </p>
+                            </div>
+                        </div>
+                        <div className="text-left">
+                            <div className="bg-green-500 inline-block rounded px-4 py-2 mb-2">
+                                <p className="text-white font-medium">
+                                    {message.text}
+                                </p>
+                            </div>
+                        </div>
+                    </>
+                ))}
             </div>
 
             <div className="flex-shrink-0 relative">
