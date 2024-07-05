@@ -1,13 +1,42 @@
 "use client"
 
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {FaPaperPlane} from "react-icons/fa6";
-import {addDoc, collection, doc, serverTimestamp} from "@firebase/firestore";
+import {addDoc, collection, doc, onSnapshot, orderBy, query, serverTimestamp, Timestamp} from "@firebase/firestore";
 import {db} from "../../../firebase";
+import {useAppContext} from "@/context/AppContext";
 
+type Message = {
+    text: string;
+    sender: string;
+    createdAt: Timestamp;
+}
 
 const Chat = () => {
+    const {selectedRoom} = useAppContext();
     const [inputMessage, setInputMessage] = useState<string>("");
+    const [messages, setMessages] = useState<Message[]>([]);
+
+    useEffect(() => {
+        if (selectedRoom) {
+            const fetchMessages = async () => {
+                const roomDomRef = doc(db, "rooms", selectedRoom);
+                const messagesCollectionRaf = collection(roomDomRef, "messages");
+
+                const q = query(messagesCollectionRaf, orderBy("createdAt"));
+
+                const unsubscribe = onSnapshot(q, (snapshot) => {
+                    const newMessages = snapshot.docs.map((doc) => doc.data() as Message);
+                    setMessages(newMessages);
+                });
+
+                return () => {
+                    unsubscribe();
+                };
+            };
+            fetchMessages();
+        }
+    }, [selectedRoom]);
 
     const sendMessage = async () => {
         if (!inputMessage.trim()) return;
