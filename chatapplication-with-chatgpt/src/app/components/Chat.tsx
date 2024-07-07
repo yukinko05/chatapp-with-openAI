@@ -6,6 +6,8 @@ import {addDoc, collection, doc, onSnapshot, orderBy, query, serverTimestamp, Ti
 import {db} from "../../../firebase";
 import {useAppContext} from "@/context/AppContext";
 import OpenAI from "openai";
+import LoadingIcons from 'react-loading-icons'
+
 
 type Message = {
     text: string;
@@ -23,6 +25,7 @@ const Chat = () => {
     const {selectedRoom} = useAppContext();
     const [inputMessage, setInputMessage] = useState<string>("");
     const [messages, setMessages] = useState<Message[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     useEffect(() => {
         if (selectedRoom) {
@@ -60,11 +63,16 @@ const Chat = () => {
         const messageCollectionRef = collection(roomRef, "messages");
         await addDoc(messageCollectionRef, messageData);
 
+        setInputMessage("");
+        setIsLoading(true);
+
         //OpenAIからの返信
         const gpt3Response = await openai.chat.completions.create({
             messages: [{ role: "user", content: inputMessage }],
             model:"gpt-3.5-turbo",
         });
+
+        setIsLoading(false);
 
         const botResponse = gpt3Response.choices[0].message.content;
         await addDoc(messageCollectionRef, {
@@ -80,7 +88,6 @@ const Chat = () => {
             </h1>
             <div className="flex-grow overflow-y-auto mb-4">
                 {messages.map((message, index) => (
-                    <>
                         <div　key={index} className={message.sender === "user" ? "text-right" : "text-left"}>
                             <div
                                 className={message.sender === "user" ? "bg-blue-500 inline-block rounded px-4 py-2 mb-2"
@@ -89,9 +96,9 @@ const Chat = () => {
                             >
                                 <p className="text-white font-medium">{message.text}</p>
                             </div>
-                        </div>
-                    </>
+                    </div>
                 ))}
+                {isLoading && <LoadingIcons.TailSpin />}
             </div>
 
             <div className="flex-shrink-0 relative">
@@ -101,6 +108,11 @@ const Chat = () => {
                     className="border-2 rounded w-full pr-10 focus:outline-none p-2"
                     onChange={(e) => setInputMessage(e.target.value)}
                     value={inputMessage}
+                    onKeyDown={(e) => {
+                        if(e.key === "Enter") {
+                            sendMessage();
+                    }
+                    }}
                 />
                 <button
                     className="absolute inset-y-0 right-4 flex items-center"
