@@ -11,6 +11,7 @@ type Room = {
     name: string;
     createdAt: Timestamp;
 }
+
 const Sidebar = () => {
     const {user, userId, setSelectedRoom} = useAppContext();
 
@@ -37,25 +38,25 @@ const Sidebar = () => {
         }
     }, [userId]);
 
-        const selectRoom = (roomId: string) => {
-            setSelectedRoom(roomId);
-        };
+    const selectRoom = (roomId: string) => {
+        setSelectedRoom(roomId);
+    };
 
-        const addNewRoom = async () => {
-            const roomName = prompt("ルーム名を入力してください。");
-            if(roomName) {
-                const newRoomRef = collection(db, "rooms");
-                await addDoc(newRoomRef, {
-                    name: roomName,
-                    userId: userId,
-                    createdAt: serverTimestamp(),
-                });
-            }
-        };
-
-        const handleLogout = () => {
-            auth.signOut()
+    const addNewRoom = async () => {
+        const roomName = prompt("ルーム名を入力してください。");
+        if (roomName) {
+            const newRoomRef = collection(db, "rooms");
+            await addDoc(newRoomRef, {
+                name: roomName,
+                userId: userId,
+                createdAt: serverTimestamp(),
+            });
         }
+    };
+
+    const handleLogout = () => {
+        auth.signOut()
+    };
 
     return (
         <div className="bg-custom-blue h-full overflow-y-auto px-5 flex flex-col">
@@ -75,15 +76,14 @@ const Sidebar = () => {
                             {room.name}
                         </li>
                     ))}
-                    {/*<li className="cursor-pointer border-b p-4 text-slate-100 hover:bg-slate-700 duration-150">*/}
-                    {/*    Room 2*/}
-                    {/*</li>*/}
-                    {/*<li className="cursor-pointer border-b p-4 text-slate-100 hover:bg-slate-700 duration-150">*/}
-                    {/*    Room 3*/}
-                    {/*</li>*/}
                 </ul>
             </div>
 
+            {user && (
+                <div className="mb-2 p-4 text-slate-100 text-lg font-medium">
+                    {user.email}
+                </div>
+            )}
             <div
                 onClick={handleLogout}
                 className=" flex items-center justify-evenly mb-2 cursor-pointer p-4 text-slate-100 hover:bg-slate-700">
