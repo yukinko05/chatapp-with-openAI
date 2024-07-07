@@ -22,7 +22,7 @@ const Chat = () => {
         dangerouslyAllowBrowser: true,
     });
 
-    const {selectedRoom} = useAppContext();
+    const {selectedRoom,selectedRoomName} = useAppContext();
     const [inputMessage, setInputMessage] = useState<string>("");
     const [messages, setMessages] = useState<Message[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -96,7 +96,7 @@ const Chat = () => {
     return (
         <div className="bg-gray-500 h-full p-4 flex flex-col">
             <h1 className="text-2xl text-white font-semibold mb-4">
-                Room1
+                {selectedRoomName}
             </h1>
             <div className="flex-grow overflow-y-auto mb-4" ref={scrollDev}>
                 {messages.map((message, index) => (
