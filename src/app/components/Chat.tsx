@@ -16,13 +16,12 @@ type Message = {
 }
 
 const Chat = () => {
-
     const openai = new OpenAI({
         apiKey: process.env.NEXT_PUBLIC_OPEN_KEY,
         dangerouslyAllowBrowser: true,
     });
 
-    const {selectedRoom,selectedRoomName} = useAppContext();
+    const {selectedRoom, selectedRoomName} = useAppContext();
     const [inputMessage, setInputMessage] = useState<string>("");
     const [messages, setMessages] = useState<Message[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
